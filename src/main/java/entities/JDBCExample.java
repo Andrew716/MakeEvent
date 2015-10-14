@@ -1,38 +1,34 @@
 package entities;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
+
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+import javax.sql.DataSource;
+import java.sql.*;
 
 /**
  * Created by Andrii on 9/4/2015.
  */
 public class JDBCExample {
-    public static void main(String[] args){
-        System.out.println("PostgreSQL JDBC connection testing");
-        try {
-            Class.forName("org.postgreSQL.Driver");
-        } catch (ClassNotFoundException e) {
-            System.out.println("Where is your PostgreSQL Driver?" + "Include in your library path");
-            e.printStackTrace();
-            return;
-        }
-        System.out.println("PostgreSQL Driver Registered");
-        Connection connection = null;
-        try {
-            connection = DriverManager.getConnection("jdbc:postgresql://127.0.0.1:5432/firstDB", "postgres",
-                    "234786");
-        } catch (SQLException e) {
-            System.out.println("Connection is failed! Check output console");
-            e.printStackTrace();
-            return;
-        }
 
-        if (connection != null){
-            System.out.println("You made it! Take control your databese now");
-        }else {
-            System.out.println("Failed to make connection");
-        }
+    public final static String JDBC_DRIVER = "org.postgresql.Driver";
+    public final static String DB_URL = "jdbc:postgresql://localhost:5432/firstDB";
+    public final static String USER = "postgres";
+    public final static String PASSWORD = "234786";
 
-    }
+
+
+   public static void DataSourceExample() throws NamingException {
+       Connection con = null;
+       try {
+           DataSource source = (DataSource)new InitialContext().lookup("DataSource");
+           con = source.getConnection();
+       } catch(SQLException e) {
+       } catch(NamingException e) {
+       } finally {
+           if(con != null) {
+               try {con.close();}catch(SQLException e) {}
+           }
+       }
+   }
 }
